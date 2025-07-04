@@ -13,7 +13,7 @@ import {
     productResponseSchema,
     updateProductSchema
 } from "../schemas/products.schema";
-import { FastifyTypedInstance } from "../types/utils";
+import { FastifyTypedInstance } from "../types/fastifyTypedInstance";
 
 export async function productsRoutes(server: FastifyTypedInstance) {
     server.post(
@@ -90,5 +90,5 @@ export async function productsRoutes(server: FastifyTypedInstance) {
             }
         },
         deleteProductHandler
-    )
+    );
 }

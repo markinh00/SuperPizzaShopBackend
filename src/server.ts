@@ -3,33 +3,25 @@ import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProv
 import { fastifyCors } from '@fastify/cors';
 import { fastify } from 'fastify';
 import { fastifySwagger } from '@fastify/swagger';
-import { productsRoutes } from './routes/product.route';
+import { productsRoutes } from './routes/products.route';
+import { customersRoutes } from './routes/customers.route';
+import errorHandler from './utils/errorHandler';
 
-const port = 8000;
+const port = process.env.PORT || "8000";
 
-const app = fastify().withTypeProvider<ZodTypeProvider>();
+const app = fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 
-app.setErrorHandler((error, request, reply) => {
-    if (error.validation) {
-        reply.status(400).send({
-            statusCode: 400,
-            error: 'Bad Request',
-            message: error.validation.map(e => `${e.message}`).join('; '),
-        });
-    } else {
-        reply.send(error);
-    }
-})
+app.setErrorHandler(errorHandler)
 
 app.register(fastifyCors, { origin: "*" });
 
 app.register(fastifySwagger, {
     openapi: {
         info: {
-            title: "Coding Sans Backend challenge",
+            title: "Super Pizza Shop Backend",
             version: "1.0.0"
         }
     },
@@ -45,9 +37,8 @@ app.get("/", () => {
 })
 
 app.register(productsRoutes, { prefix: "/products" })
+app.register(customersRoutes, { prefix: "/customers" })
 
-app.listen({ port: port }).then(() => {
-    console.log(`HTTP server running at ${8000}`)
-}).catch(error => {
-    console.log(error);
+app.listen({ port: parseInt(port), host: '0.0.0.0' }).then(() => {
+    console.log(`HTTP server running at ${parseInt(port)}`)
 });

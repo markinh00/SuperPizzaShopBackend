@@ -1,4 +1,5 @@
 import { z } from "zod/v4";
+import { paginationSchema } from "./pagination.schema";
 
 export const createProductSchema = z.object({
     name: z
@@ -8,11 +9,11 @@ export const createProductSchema = z.object({
                 : "Field 'name' must be a string",
         }),
     description: z
-        .string({
-            error: (issue) => issue.input === undefined
-                ? "Field 'description' is required"
-                : "Field 'description' must be a string",
-        }),
+        .string()
+        .optional(),
+    category: z
+        .string()
+        .optional(),
     priceInCents: z
         .number({
             error: (issue) => issue.input === undefined
@@ -28,7 +29,8 @@ export type CreateProduct = z.infer<typeof createProductSchema>;
 export const productResponseSchema = z.object({
     id: z.string(),
     name: z.string(),
-    description: z.string(),
+    description: z.string().nullable(),
+    category: z.string().nullable(),
     priceInCents: z.int(),
     createdAt: z.date(),
     updatedAt: z.date(),
@@ -36,22 +38,15 @@ export const productResponseSchema = z.object({
 
 export type ProducResponse = z.infer<typeof productResponseSchema>;
 
-export const productQuerySchema = z.object({
-    page: z.coerce.number({ error: "Field 'page' must be a number" })
-        .gte(1, { message: "Field 'page' must be at least 1." })
-        .optional()
-        .default(1),
-    size: z.coerce.number({ error: "Field 'size' must be a number" })
-        .gte(1, { message: "Field 'size' must be at least 1." })
-        .lte(200, { message: "Field 'size' cannot be greater than 200." })
-        .optional()
-        .default(50),
+const enumValues = Object.keys(productResponseSchema.shape);
+export const productQuerySchema = paginationSchema.extend({
+    orderBy: z.enum(enumValues).optional().default(enumValues[3]),
 });
 
 export type ProductQuery = z.infer<typeof productQuerySchema>;
 
 export const productParamsSchema = z.object({
-    productId: z.string().uuid({ message: "Product ID must be a valid UUID" }),
+    productId: z.uuidv4({ message: "Product ID must be a valid UUID" }),
 });
 
 export type ProductParams = z.infer<typeof productParamsSchema>;
@@ -59,6 +54,7 @@ export type ProductParams = z.infer<typeof productParamsSchema>;
 export const updateProductSchema = z.object({
     name: z.string().optional(),
     description: z.string().optional(),
+    category: z.string().optional(),
     priceInCents: z.int().nonnegative().optional(),
 });
 

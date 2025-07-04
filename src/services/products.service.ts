@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { CreateProduct, ProductQuery, UpdateProduct } from "../schemas/products.schema";
 import prisma from "../utils/prisma";
+import { InternalServerError, NotFoundError } from "../utils/errors";
 
 export async function createProduct(input: CreateProduct) {
     const product = prisma.product.create({
@@ -16,6 +17,9 @@ export async function getAllProducts(query: ProductQuery) {
     const products = await prisma.product.findMany({
         skip: (page - 1) * size,
         take: size,
+        orderBy: {
+            [query.orderBy]: query.desc ? "desc" : "asc"
+        }
     });
 
     return products;
@@ -29,9 +33,9 @@ export async function getProductById(productId: string) {
     return product;
 }
 
-export async function updateProduct(productId: string, productUpdateData: UpdateProduct) {
+export async function updateProduct(productId: string, updateData: UpdateProduct) {
     const cleanedData = Object.fromEntries(
-        Object.entries(productUpdateData).filter(([_, value]) => value !== undefined)
+        Object.entries(updateData).filter(([_, value]) => value !== undefined)
     );
 
     try {
@@ -43,10 +47,10 @@ export async function updateProduct(productId: string, productUpdateData: Update
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             if (error.code === "P2025") {
-                return undefined
+                throw new NotFoundError(`Product with ID ${productId}`)
             }
         } else {
-            throw error
+            throw InternalServerError(error)
         }
     }
 }
@@ -61,10 +65,10 @@ export async function deleteProduct(productId: string) {
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             if (error.code === "P2025") {
-                return undefined
+                throw new NotFoundError(`Product with ID ${productId}`)
             }
         } else {
-            throw error
+            throw InternalServerError(error)
         }
     }
 }

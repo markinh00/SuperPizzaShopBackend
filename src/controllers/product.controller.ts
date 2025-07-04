@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { CreateProduct, ProductParams, ProductQuery, UpdateProduct } from "../schemas/products.schema";
 import { createProduct, deleteProduct, getAllProducts, getProductById, updateProduct } from "../services/products.service";
+import { InternalServerError, NotFoundError } from "../utils/errors";
 
 export async function createProductHandler(
     request: FastifyRequest<{ Body: CreateProduct }>,
@@ -14,7 +15,7 @@ export async function createProductHandler(
         return reply.code(201).send(product);
     } catch (error) {
         console.log(error);
-        return reply.code(500).send(error);
+        throw new InternalServerError(error);
     }
 }
 
@@ -30,7 +31,7 @@ export async function getAllProductsHandler(
         return reply.code(200).send(products);
     } catch (error) {
         console.log(error);
-        return reply.code(500).send(error);
+        throw new InternalServerError(error);
     }
 }
 
@@ -44,13 +45,13 @@ export async function getProductByIdHandler(
         const product = await getProductById(productId);
 
         if (!product) {
-            return reply.code(404).send({ message: `Product with id ${productId} not found` });
+            throw new NotFoundError(`Product with ID ${productId}`)
         }
 
         return reply.code(200).send(product);
     } catch (error) {
         console.log(error);
-        return reply.code(500).send(error);
+        throw new InternalServerError(error);
     }
 }
 
@@ -68,13 +69,13 @@ export async function updateProductHandler(
         const updatedProduct = await updateProduct(productId, updateProductData);
 
         if (!updatedProduct) {
-            return reply.code(404).send({ message: `Product with id ${productId} not found` });
+            throw new NotFoundError(`Product with ID ${productId}`)
         }
 
         return reply.code(200).send(updatedProduct);
     } catch (error) {
         console.log(error);
-        return reply.code(500).send(error);
+        throw new InternalServerError(error);
     }
 }
 
@@ -88,12 +89,12 @@ export async function deleteProductHandler(
         const deletedProduct = await deleteProduct(productId);
 
         if (!deletedProduct) {
-            return reply.code(404).send({ message: `Product with id ${productId} not found` });
+            throw new NotFoundError(`Product with ID ${productId}`)
         }
 
         return reply.code(200).send(deletedProduct);
     } catch (error) {
         console.log(error);
-        return reply.code(500).send(error);
+        throw new InternalServerError(error);
     }
 }
