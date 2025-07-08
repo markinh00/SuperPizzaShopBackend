@@ -23,3 +23,10 @@ export const createAdminSchema = z.object({
 
 export type CreateAdmin = z.infer<typeof createAdminSchema>;
 
+export const adminResponseSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    email: z.string(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+});

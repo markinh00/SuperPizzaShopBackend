@@ -49,9 +49,9 @@ export async function updateProduct(productId: string, updateData: UpdateProduct
             if (error.code === "P2025") {
                 throw new NotFoundError(`Product with ID ${productId}`)
             }
-        } else {
             throw InternalServerError(error)
         }
+        throw InternalServerError(error)
     }
 }
 
@@ -67,8 +67,8 @@ export async function deleteProduct(productId: string) {
             if (error.code === "P2025") {
                 throw new NotFoundError(`Product with ID ${productId}`)
             }
-        } else {
             throw InternalServerError(error)
         }
+        throw InternalServerError(error)
     }
 }

@@ -6,6 +6,8 @@ import { fastifySwagger } from '@fastify/swagger';
 import { productsRoutes } from './routes/products.route';
 import { customersRoutes } from './routes/customers.route';
 import errorHandler from './utils/errorHandler';
+import jwtPlugin from './plugins/jwt';
+import { authRoutes } from './routes/auth.route';
 
 const port = process.env.PORT || "8000";
 
@@ -32,10 +34,13 @@ app.register(fastifySwaggerUi, {
     routePrefix: "/docs",
 })
 
+app.register(jwtPlugin)
+
 app.get("/", () => {
     return { message: "see the documentation at /docs" }
 })
 
+app.register(authRoutes, { prefix: "/auth" })
 app.register(productsRoutes, { prefix: "/products" })
 app.register(customersRoutes, { prefix: "/customers" })
 

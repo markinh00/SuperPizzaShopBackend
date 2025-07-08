@@ -14,11 +14,13 @@ import {
     updateProductSchema
 } from "../schemas/products.schema";
 import { FastifyTypedInstance } from "../types/fastifyTypedInstance";
+import { UserRole } from "../schemas/users.schema";
 
 export async function productsRoutes(server: FastifyTypedInstance) {
     server.post(
         "/",
         {
+            preValidation: [server.authorizedRoles([UserRole.ADMIN])],
             schema: {
                 tags: ["Products"],
                 summary: "Create a product",
@@ -34,6 +36,7 @@ export async function productsRoutes(server: FastifyTypedInstance) {
     server.get(
         "/",
         {
+            preValidation: [server.authorizedRoles([UserRole.ADMIN, UserRole.CUSTOMER])],
             schema: {
                 tags: ["Products"],
                 summary: "Get many products",
@@ -50,6 +53,7 @@ export async function productsRoutes(server: FastifyTypedInstance) {
         "/:productId",
         {
             schema: {
+                preValidation: [server.authorizedRoles([UserRole.ADMIN, UserRole.CUSTOMER])],
                 tags: ["Products"],
                 summary: "Get a product",
                 params: productParamsSchema,
@@ -65,6 +69,7 @@ export async function productsRoutes(server: FastifyTypedInstance) {
         "/:productId",
         {
             schema: {
+                preValidation: [server.authorizedRoles([UserRole.ADMIN])],
                 tags: ["Products"],
                 summary: "Update a product",
                 params: productParamsSchema,
@@ -81,6 +86,7 @@ export async function productsRoutes(server: FastifyTypedInstance) {
         "/:productId",
         {
             schema: {
+                preValidation: [server.authorizedRoles([UserRole.ADMIN])],
                 tags: ["Products"],
                 summary: "Delete a product",
                 params: productParamsSchema,

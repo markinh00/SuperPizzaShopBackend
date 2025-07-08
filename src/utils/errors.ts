@@ -1,6 +1,12 @@
 import createError from '@fastify/error';
 
 
+export const UnauthorizedError = createError(
+    'APP_UNAUTHORIZED',
+    'Not Enough Permitions: %s',
+    401
+);
+
 export const NotFoundError = createError(
     'APP_NOT_FOUND',
     'Resource not found: %s',

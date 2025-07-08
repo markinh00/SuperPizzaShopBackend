@@ -16,11 +16,11 @@ export async function createCustomer(input: CreateCustomer) {
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             if (error.code === "P2002") {
-                throw new ConflictError(`Email ${input.email} already exists`)
+                throw new ConflictError(`Email ${input.email} already exists`);
             }
-        } else {
-            throw new InternalServerError(error)
+            throw new InternalServerError(error);
         }
+        throw new InternalServerError(error);
     }
 }
 
@@ -46,13 +46,19 @@ export async function getCustomerById(customerId: string) {
 
         return customer;
     } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === "P2025") {
-                throw new NotFoundError(`Customer with ID ${customerId}`)
-            }
-        } else {
-            throw new InternalServerError(error)
-        }
+        throw new InternalServerError(error)
+    }
+}
+
+export async function getCustomerByEmail(customerEmail: string) {
+    try {
+        const customer = await prisma.customer.findUnique({
+            where: { email: customerEmail }
+        })
+
+        return customer;
+    } catch (error) {
+        throw new InternalServerError(error)
     }
 }
 
@@ -75,9 +81,9 @@ export async function updateCustomer(customerId: string, updateData: UpdateCusto
             if (error.code === "P2002") {
                 throw new ConflictError(`Email ${updateData.email} already exists`)
             }
-        } else {
             throw new InternalServerError(error)
         }
+        throw new InternalServerError(error)
     }
 }
 
@@ -93,8 +99,8 @@ export async function deleteCustomer(customerId: string) {
             if (error.code === "P2025") {
                 throw new NotFoundError(`Customer with ID ${customerId}`)
             }
-        } else {
             throw InternalServerError(error)
         }
+        throw InternalServerError(error)
     }
 }

@@ -6,6 +6,6 @@ export async function getHashedPassword(password: string) {
     return await bcrypt.hash(password, SALT_ROUNDS);
 }
 
-export async function verifyPassword(password: string, candidatePassword: string) {
-    await bcrypt.compare(password, candidatePassword);
+export async function verifyPassword(plaintextPassword: string, hashedPassword: string) {
+    return await bcrypt.compare(plaintextPassword, hashedPassword);
 }

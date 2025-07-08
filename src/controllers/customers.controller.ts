@@ -1,7 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { CustomerParams, CustomerQuery, UpdateCustomer } from "../schemas/customers.schema";
-import { InternalServerError, NotFoundError } from "../utils/errors";
+import { InternalServerError, NotFoundError, UnauthorizedError } from "../utils/errors";
 import { deleteCustomer, getAllCustomers, getCustomerById, updateCustomer } from "../services/customers.service";
+import { RequestUser, UserRole } from "../schemas/users.schema";
 
 export async function getAllCustomersHandler(
     request: FastifyRequest<{ Querystring: CustomerQuery }>,
@@ -24,6 +25,11 @@ export async function getCustomerByIdHandler(
     reply: FastifyReply
 ) {
     const { customerId } = request.params;
+    const { id, role } = request.user as RequestUser;
+
+    if (id !== customerId && role !== UserRole.ADMIN) {
+        throw new UnauthorizedError("A customer cannot see other's customer data")
+    }
 
     try {
         const customer = await getCustomerById(customerId);
@@ -48,6 +54,11 @@ export async function updateCustomerHandler(
 ) {
     const { customerId } = request.params;
     const updateCustomerData = request.body;
+    const { id, role } = request.user as RequestUser;
+
+    if (id !== customerId && role !== UserRole.ADMIN) {
+        throw new UnauthorizedError("A customer cannot change other's customer data")
+    }
 
     try {
         const updatedCustomer = await updateCustomer(customerId, updateCustomerData);
@@ -68,6 +79,11 @@ export async function deleteCustomerHandler(
     reply: FastifyReply
 ) {
     const { customerId } = request.params;
+    const { id, role } = request.user as RequestUser;
+
+    if (id !== customerId && role !== UserRole.ADMIN) {
+        throw new UnauthorizedError("A customer cannot delete other's customer data")
+    }
 
     try {
         const deletedCustomer = await deleteCustomer(customerId);
