@@ -25,6 +25,14 @@ export async function getAllProducts(query: ProductQuery) {
     return products;
 }
 
+export async function getManyById(productIds: string[]) {
+    const products = prisma.product.findMany({
+        where: { id: { in: productIds } }
+    });
+
+    return products
+}
+
 export async function getProductById(productId: string) {
     const product = prisma.product.findUnique({
         where: { id: productId }

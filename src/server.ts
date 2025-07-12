@@ -8,6 +8,7 @@ import { customersRoutes } from './routes/customers.route';
 import errorHandler from './utils/errorHandler';
 import jwtPlugin from './plugins/jwt';
 import { authRoutes } from './routes/auth.route';
+import { ordersRoutes } from './routes/order.route';
 
 const port = process.env.PORT || "8000";
 
@@ -43,6 +44,7 @@ app.get("/", () => {
 app.register(authRoutes, { prefix: "/auth" })
 app.register(productsRoutes, { prefix: "/products" })
 app.register(customersRoutes, { prefix: "/customers" })
+app.register(ordersRoutes, { prefix: "/orders" })
 
 app.listen({ port: parseInt(port), host: '0.0.0.0' }).then(() => {
     console.log(`HTTP server running at ${parseInt(port)}`)

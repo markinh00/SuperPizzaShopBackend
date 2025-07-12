@@ -27,7 +27,7 @@ export const createProductSchema = z.object({
 export type CreateProduct = z.infer<typeof createProductSchema>;
 
 export const productResponseSchema = z.object({
-    id: z.string(),
+    id: z.uuidv4(),
     name: z.string(),
     description: z.string().nullable(),
     category: z.string().nullable(),
@@ -59,3 +59,23 @@ export const updateProductSchema = z.object({
 });
 
 export type UpdateProduct = z.infer<typeof updateProductSchema>;
+
+export const productInCreateOrderSchema = z.object({
+    productId: z.uuidv4({
+        error: (issue) => issue.input === undefined
+            ? "Field 'productId' is required"
+            : "Field 'productId' must be a uuidv4"
+    }),
+    quantity: z.int({
+        error: (issue) => issue.input === undefined
+            ? "Field 'quantity' is required"
+            : "Field 'quantity' must be a integer"
+    }),
+})
+
+export type ProductInCreateOrder = z.infer<typeof productInCreateOrderSchema>;
+
+export const productInOrderResponseSchema = productResponseSchema.extend({
+    productId: z.uuidv4().nullable(),
+    orderId: z.uuidv4()
+})

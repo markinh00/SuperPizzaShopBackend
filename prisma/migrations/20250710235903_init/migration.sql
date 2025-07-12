@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "Status" AS ENUM ('CANCELED', 'REVIEWING', 'ONGOING', 'DELIVERED');
+
 -- CreateTable
 CREATE TABLE "Admin" (
     "id" TEXT NOT NULL,
@@ -41,6 +44,7 @@ CREATE TABLE "Order" (
     "id" TEXT NOT NULL,
     "totalPriceInCents" INTEGER NOT NULL,
     "address" TEXT NOT NULL,
+    "status" "Status" NOT NULL DEFAULT 'REVIEWING',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "customerId" TEXT,
@@ -72,7 +76,7 @@ CREATE UNIQUE INDEX "Customer_email_key" ON "Customer"("email");
 ALTER TABLE "Order" ADD CONSTRAINT "Order_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ProductInOrder" ADD CONSTRAINT "ProductInOrder_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ProductInOrder" ADD CONSTRAINT "ProductInOrder_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProductInOrder" ADD CONSTRAINT "ProductInOrder_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE SET NULL ON UPDATE CASCADE;

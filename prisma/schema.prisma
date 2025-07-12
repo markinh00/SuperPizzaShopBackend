@@ -46,10 +46,18 @@ model Product {
     productsInOrders ProductInOrder[]
 }
 
+enum Status {
+    CANCELED
+    REVIEWING
+    ONGOING
+    DELIVERED
+}
+
 model Order {
     id                String   @id @default(uuid())
     totalPriceInCents Int
     address           String
+    status            Status   @default(REVIEWING)
     createdAt         DateTime @default(now())
     updatedAt         DateTime @updatedAt
 
@@ -68,7 +76,7 @@ model ProductInOrder {
     quantity     Int
 
     orderId String
-    order   Order  @relation(fields: [orderId], references: [id])
+    order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
     productId String?
     product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
