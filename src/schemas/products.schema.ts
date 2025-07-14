@@ -76,6 +76,7 @@ export const productInCreateOrderSchema = z.object({
 export type ProductInCreateOrder = z.infer<typeof productInCreateOrderSchema>;
 
 export const productInOrderResponseSchema = productResponseSchema.extend({
+    quantity: z.number(),
     productId: z.uuidv4().nullable(),
     orderId: z.uuidv4()
 })

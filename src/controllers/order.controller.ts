@@ -16,10 +16,10 @@ export async function createOrderHandler(
 }
 
 export async function getAllOrdersHandler(
-    request: FastifyRequest<{ Body: OrderQuery }>,
+    request: FastifyRequest<{ Querystring: OrderQuery }>,
     reply: FastifyReply
 ) {
-    const query = request.body;
+    const query = request.query;
 
     const orders = await getAllOrders(query);
 

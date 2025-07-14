@@ -60,6 +60,8 @@ CREATE TABLE "ProductInOrder" (
     "category" TEXT,
     "priceInCents" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "orderId" TEXT NOT NULL,
     "productId" TEXT,
 

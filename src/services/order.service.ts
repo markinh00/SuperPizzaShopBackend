@@ -64,7 +64,8 @@ export async function getAllOrders(query: OrderQuery) {
         take: size,
         orderBy: {
             [query.orderBy]: query.desc ? "desc" : "asc"
-        }
+        },
+        include: { productsInOrder: true }
     });
 
     return orders;
@@ -96,7 +97,7 @@ export async function addProductsToOrder(
 
     let totalPriceInCents = 0;
 
-    products.forEach(async (item) => {
+    for (const item of products) {
         const product = productsFound.find((p) => p.id === item.productId);
         if (!product) {
             throw new NotFoundError(`Product with ID ${item.productId}`);
@@ -126,7 +127,7 @@ export async function addProductsToOrder(
                 },
             });
         }
-    })
+    }
 
     const updatedProductsInOrder = await prisma.productInOrder.findMany({
         where: { orderId },
@@ -159,7 +160,7 @@ export async function removeProductsFromOrder(
         throw new NotFoundError(`Order with ID ${orderId}`);
     }
 
-    products.forEach(async (item) => {
+    for (const item of products) {
         const existingProductInOrder = order.productsInOrder.find(
             (p) => p.productId === item.productId
         );
@@ -182,7 +183,7 @@ export async function removeProductsFromOrder(
                 },
             });
         }
-    })
+    }
 
     const updatedProductsInOrder = await prisma.productInOrder.findMany({
         where: { orderId },
@@ -207,7 +208,7 @@ export async function updateOrder(orderId: string, updateData: UpdateOrder) {
         Object.entries(updateData).filter(([_, value]) => value !== undefined)
     );
 
-    try {        
+    try {
         const updatedOrder = await prisma.order.update({
             where: { id: orderId },
             data: cleanedData,
@@ -228,7 +229,8 @@ export async function updateOrder(orderId: string, updateData: UpdateOrder) {
 export async function deleteOrder(orderId: string) {
     try {
         const deletedOrder = await prisma.order.delete({
-            where: { id: orderId }
+            where: { id: orderId },
+            include: { productsInOrder: true },
         });
 
         return deletedOrder;

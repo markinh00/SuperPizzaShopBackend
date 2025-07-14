@@ -28,8 +28,9 @@ export const orderResponseSchema = z.object({
     totalPriceInCents: z.int(),
     createdAt: z.date(),
     updatedAt: z.date(),
-    productsInOrder: z.array(productInOrderResponseSchema),
     status: orderStatusEnumSchema,
+    address: z.string(),
+    productsInOrder: z.array(productInOrderResponseSchema),
 });
 
 export type OrderResponse = z.infer<typeof orderResponseSchema>;

@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     image: postgres:16
@@ -11,6 +9,31 @@ services:
       - "5432:5432"
     volumes:
       - postgresdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+    depends_on:
+      - db
+    environment:
+       - DATABASE_URL=postgresql://postgres:postgres@db:5432/super-pizza-shop?schema=public
+       - PORT=${PORT}
+       - SALT_POUNDS=${SALT_POUNDS}
+       - ADMIN_NAME=${ADMIN_NAME}
+       - ADMIN_EMAIL=${ADMIN_EMAIL}
+       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+       - SECRET=${SECRET}
+       - EXPIRES_IN_SECODS=${EXPIRES_IN_SECODS}
+    command: >
+      sh -c "
+        npx prisma migrate deploy &&
+        npx prisma db seed &&
+        npm run dev
+      "
+    ports:
+      - "8000:8000"
     networks:
       - app-network
 

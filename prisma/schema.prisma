@@ -68,12 +68,14 @@ model Order {
 }
 
 model ProductInOrder {
-    id           String  @id @default(uuid())
+    id           String   @id @default(uuid())
     name         String
     description  String?
     category     String?
     priceInCents Int
     quantity     Int
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
 
     orderId String
     order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
