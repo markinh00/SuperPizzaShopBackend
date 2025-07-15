@@ -1,6 +1,6 @@
 # 🍕 SuperPizzaShop - Backend
 
-**SuperPizzaShop** is a backend API project for a fake Pizza shop developed in **TypeScript** using **Fastify**, **Prisma ORM**, **PostgreSQL**, validations with **Zod**, documentation with **Swagger**, and containerization with **Docker**.
+**SuperPizzaShop** is a backend API project for a non-existent Pizza shop developed in **TypeScript** using **Fastify**, **Prisma ORM**, **PostgreSQL**, validations with **Zod**, documentation with **Swagger**, and containerization with **Docker**.
 
 This project is an example of a modern and scalable backend architecture for managing orders for a pizzeria.
 
