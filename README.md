@@ -14,11 +14,13 @@ This project is an example of a modern and scalable backend architecture for man
 - [PostgreSQL](https://www.postgresql.org/): relational database.
 - [Zod](https://zod.dev/): schema validation.
 - [Swagger](https://swagger.io/): interactive API documentation.
+- [JWT](https://jwt.io/): authentication with JWT Token
 - [Docker](https://www.docker.com/): containerization for a consistent environment.
 
 ---
 
 ## 🏛️ Architecture - UML
+
 ![UML](https://github.com/markinh00/SuperPizzaShopBackend/blob/main/UML.jpg)
 
 ---
@@ -48,7 +50,25 @@ cd SuperPizzaShopBackend
 docker-compose up --build
 ```
 
-if reseting the database is needed use the command bellow:
+### 3. Done!
+
+with this the container will
+
+- create a postgres database
+- populate the database with `3 pizzas`, `3 drinks` and `1 admin` with the data bellow:
+
+```json
+{
+	"name": "admin",
+	"email": "admin@example.com",
+	"password": "123456"
+}
+```
+- create the application at `http://localhost:8000/`
+
+to see the swagger documentation go to: `http://localhost:8000/docs`
+
+if reseting the database is needed use the command bellow the delete everything and then the command from the second step:
 
 ```bash
 docker-compose down -v
