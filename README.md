@@ -59,16 +59,51 @@ with this the container will
 
 ```json
 {
-	"name": "admin",
-	"email": "admin@example.com",
-	"password": "123456"
+    "name": "admin",
+    "email": "admin@example.com",
+    "password": "123456"
 }
 ```
-- create the application at `http://localhost:8000/`
+- create the application and make it accessible at `http://localhost:8000/`
+
+## 📄 Swagger Documentation
 
 to see the swagger documentation go to: `http://localhost:8000/docs`
 
-if reseting the database is needed use the command bellow the delete everything and then the command from the second step:
+## 🔓 Accessing the routes
+
+to access the API a JWT Token is needed in every route. To get a token use the login route `http://localhost:8000/auth/login` with the body bellow:
+
+```json
+{
+    "email": "admin@example.com",
+    "password": "123456"
+}
+```
+
+or use the register route `http://localhost:8000/auth/register` to create a new customer with the body bellow:
+
+```json
+{
+    "name": "John",
+    "email": "john@example.com",
+    "password": "123456",
+    "phone": "12345678901"
+}
+```
+
+both routes will return a access token that is needed on the header of every request like in the example bellow.
+
+<img width="1370" height="531" alt="image" src="https://github.com/user-attachments/assets/9e73a223-f186-47fc-b182-7291dca37c0f" />
+
+then the token can be used like:
+
+<img width="1350" height="231" alt="image" src="https://github.com/user-attachments/assets/72278351-b484-4b56-8f49-f931d86c7d57" />
+
+
+## 🔄 Reseting the Project
+
+if reseting the database is needed use the command bellow the delete everything and then the command from the second step of [running the project](#2-run-the-docker-container):
 
 ```bash
 docker-compose down -v
